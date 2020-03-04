@@ -3,23 +3,20 @@ from datetime import datetime, timedelta
 from math import ceil
 from typing import List
 
-import dateutil
+import gspread
 import pandas
 from dydx.constants import MARKET_DAI, MARKET_USDC
 from dydx.util import token_to_wei
+from oauth2client.service_account import ServiceAccountCredentials
 
 from client import client
 from const import RISK, HISTORY_LENGTH, TRADE_EXPIRATION_SECS
 from sess import s
 from util import *
-from pytz import UTC
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-
 
 # use creds to create a client to interact with the Google Drive API
 scope = ['https://spreadsheets.google.com/feeds',
-    'https://www.googleapis.com/auth/drive']
+         'https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name('My Project 44895-c802dfa0516d.json', scope)
 google_client = gspread.authorize(creds)
 
@@ -75,8 +72,8 @@ def run() -> None:
             assert 0.97 < wei_price_to_token_price(midpoint) < 1.03
 
             if spread <= 0:
-                maximum = max(midpoint + 1e-15, maximum)
-                minimum = min(midpoint - 1e-15, minimum)
+                maximum = max(midpoint + 1e-16, maximum)
+                minimum = min(midpoint - 1e-16, minimum)
                 spread = maximum - minimum
 
             # This is absolutely necessary because we need to ensure we are always selling for higher than we are buying.
@@ -99,7 +96,8 @@ def run() -> None:
             balance_usdc = my_balances[MARKET_USDC]
             balance_dai = my_balances[MARKET_DAI]
 
-            new_row = [str(datetime.utcnow()), wei_to_token(balance_usdc, MARKET_USDC) + wei_to_token(balance_dai, MARKET_DAI)]
+            new_row = [str(datetime.utcnow()),
+                       wei_to_token(balance_usdc, MARKET_USDC) + wei_to_token(balance_dai, MARKET_DAI)]
             sheet.append_row(new_row)
 
             num_buy_orders = len(list(filter(lambda order: order["side"] == "BUY", my_open_orders)))

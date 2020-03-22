@@ -1,5 +1,6 @@
 import time
 from datetime import datetime, timedelta
+from decimal import Decimal
 from math import ceil
 from typing import List
 
@@ -106,9 +107,9 @@ def run() -> None:
             for order in my_open_orders:
                 if order["market"] == "DAI-USDC":
                     if order["side"] == "BUY":
-                        balance_usdc -= int(order["quoteAmount"])
+                        balance_usdc -= ceil(float(order["quoteAmount"]))
                     else:
-                        balance_dai -= int(order["baseAmount"])
+                        balance_dai -= ceil(float(order["baseAmount"]))
 
             if balance_usdc >= token_to_wei(22, MARKET_USDC) and num_buy_orders == 0:
                 max_buy_price = min(calculate_max_price_for_buy(balance_usdc, maximum), minimum)
@@ -137,11 +138,19 @@ def run() -> None:
                 print(msg)
                 post_webhook_message(msg)
 
-                client.create_order(
-                    makerMarket=MARKET_USDC,
-                    takerMarket=MARKET_DAI,
-                    makerAmount=balance_usdc,
-                    takerAmount=a_p,
+                # client.create_order(
+                #     makerMarket=MARKET_USDC,
+                #     takerMarket=MARKET_DAI,
+                #     makerAmount=balance_usdc,
+                #     takerAmount=a_p,
+                #     expiration=int(time.time()) + TRADE_EXPIRATION_SECS
+                #)
+
+                client.place_order(
+                    market=consts.PAIR_DAI_USDC,
+                    side=consts.SIDE_BUY,
+                    amount=a_p,
+                    price=round(Decimal(max_buy_price), 16),
                     expiration=int(time.time()) + TRADE_EXPIRATION_SECS
                 )
 
@@ -173,11 +182,19 @@ def run() -> None:
                 print(msg)
                 post_webhook_message(msg)
 
-                client.create_order(
-                    makerMarket=MARKET_DAI,
-                    takerMarket=MARKET_USDC,
-                    makerAmount=balance_dai,
-                    takerAmount=a_p,
+                # client.create_order(
+                #     makerMarket=MARKET_DAI,
+                #     takerMarket=MARKET_USDC,
+                #     makerAmount=balance_dai,
+                #     takerAmount=a_p,
+                #     expiration=int(time.time()) + TRADE_EXPIRATION_SECS
+                # )
+
+                client.place_order(
+                    market=consts.PAIR_DAI_USDC,
+                    side=consts.SIDE_SELL,
+                    amount=balance_dai,
+                    price=round(Decimal(min_sell_price), 16),
                     expiration=int(time.time()) + TRADE_EXPIRATION_SECS
                 )
 

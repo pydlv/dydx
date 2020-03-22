@@ -129,11 +129,6 @@ def calculate_expected_profit_from_sell(
 
 
 def wei_price_to_token_price(price: float) -> float:
-    # num, div = price.as_integer_ratio()
-    # usdc = wei_to_token(num, consts.MARKET_USDC)
-    # dai = wei_to_token(div, consts.MARKET_DAI)
-    # return usdc/dai
-
     return price * 1e12
 
 

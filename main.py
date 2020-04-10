@@ -21,10 +21,6 @@ scope = ['https://spreadsheets.google.com/feeds',
 creds = ServiceAccountCredentials.from_json_keyfile_name('My Project 44895-c802dfa0516d.json', scope)
 google_client = gspread.authorize(creds)
 
-# Find a workbook by name and open the first sheet
-# Make sure you use the right name here.
-sheet = google_client.open("DYDX Balance").sheet1
-
 
 def run() -> None:
     while True:
@@ -99,7 +95,6 @@ def run() -> None:
 
             new_row = [str(datetime.utcnow()),
                        wei_to_token(balance_usdc, MARKET_USDC) + wei_to_token(balance_dai, MARKET_DAI)]
-            sheet.append_row(new_row)
 
             num_buy_orders = len(list(filter(lambda order: order["side"] == "BUY", my_open_orders)))
             num_sell_orders = len(list(filter(lambda order: order["side"] == "SELL", my_open_orders)))

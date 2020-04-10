@@ -70,7 +70,7 @@ def run() -> None:
             spread = maximum - minimum  # The greater, the better
             midpoint = (minimum + maximum) / 2
 
-            assert 0.97 < wei_price_to_token_price(midpoint) < 1.03
+            assert 0.94 < wei_price_to_token_price(midpoint) < 1.06
 
             if spread <= 0:
                 maximum = max(midpoint + 1e-16, maximum)

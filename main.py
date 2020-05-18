@@ -56,12 +56,14 @@ def run() -> None:
             original_highs: List[float] = sorted(list(map(lambda candle: float(candle["high"]), candles)), reverse=True)
             highs = [token_price_to_wei_price(high) for high in original_highs]
 
-            maximum = highs[RISK]
+            original_maximum = highs[RISK]
+            maximum = original_maximum
 
             original_lows: List[float] = sorted(list(map(lambda candle: float(candle["low"]), candles)))
             lows = [token_price_to_wei_price(low) for low in original_lows]
 
-            minimum = lows[RISK]
+            original_minimum = lows[RISK]
+            minimum = original_minimum
 
             spread = maximum - minimum  # The greater, the better
             midpoint = (minimum + maximum) / 2
@@ -119,14 +121,19 @@ def run() -> None:
                 print("m_b", wei_to_token(a_f - balance_usdc, MARKET_USDC))
 
                 msg = f"""
-    Creating order
-    makerMarket={MARKET_USDC}
-    takerMarket={MARKET_DAI}
-    makerAmount={balance_usdc} ({wei_to_token(balance_usdc, MARKET_USDC)} USDC)
-    takerAmount={a_p} ({wei_to_token(a_p, MARKET_DAI)} DAI)
-    price={wei_price_to_token_price(max_buy_price)}
-    predictedProfit={a_f - balance_usdc} ({wei_to_token(a_f - balance_usdc, MARKET_USDC)} USDC)
-    """
+-------------------------------------------------------------------------------
+Creating order
+makerMarket={MARKET_USDC}
+takerMarket={MARKET_DAI}
+makerAmount={balance_usdc} ({wei_to_token(balance_usdc, MARKET_USDC)} USDC)
+takerAmount={a_p} ({wei_to_token(a_p, MARKET_DAI)} DAI)
+price={wei_price_to_token_price(max_buy_price)}
+predictedProfit={a_f - balance_usdc} ({wei_to_token(a_f - balance_usdc, MARKET_USDC)} USDC)
+
+min={wei_price_to_token_price(original_minimum)}
+max={wei_price_to_token_price(original_maximum)}
+-------------------------------------------------------------------------------
+"""
                 print(msg)
                 post_webhook_message(msg)
 
@@ -154,14 +161,18 @@ def run() -> None:
                 print("m_b", wei_to_token(a_f - balance_dai, MARKET_DAI))
 
                 msg = f"""
-    Creating order
-    makerMarket={MARKET_DAI}
-    takerMarket={MARKET_USDC}
-    makerAmount={balance_dai} ({wei_to_token(balance_dai, MARKET_DAI)} DAI)
-    takerAmount={a_p} ({wei_to_token(a_p, MARKET_USDC)} USDC)
-    price={wei_price_to_token_price(min_sell_price)}
-    predictedProfit={a_f - balance_dai} ({wei_to_token(a_f - balance_dai, MARKET_DAI)} DAI)
-    """
+-------------------------------------------------------------------------------
+Creating order
+makerMarket={MARKET_DAI}
+takerMarket={MARKET_USDC}
+makerAmount={balance_dai} ({wei_to_token(balance_dai, MARKET_DAI)} DAI)
+takerAmount={a_p} ({wei_to_token(a_p, MARKET_USDC)} USDC)
+price={wei_price_to_token_price(min_sell_price)}
+predictedProfit={a_f - balance_dai} ({wei_to_token(a_f - balance_dai, MARKET_DAI)} DAI)
+min={wei_price_to_token_price(original_minimum)}
+max={wei_price_to_token_price(original_maximum)}
+-------------------------------------------------------------------------------
+"""
 
                 print(msg)
                 post_webhook_message(msg)

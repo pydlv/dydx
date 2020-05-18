@@ -2,8 +2,8 @@ from dydx.constants import MARKET_USDC, MARKET_DAI
 from dydx.util import token_to_wei
 
 # Constants
-HISTORY_LENGTH = 14
-RISK: int = 10  # out of HISTORY LENGTH, where HISTORY LENGTH is the least amount of risk
+HISTORY_LENGTH = 60
+RISK: int = 50  # out of HISTORY LENGTH, where HISTORY LENGTH is the least amount of risk
 MINIMUM_EXPECTED_PROFIT_PER_TRADE: float = 0.0015
 TRADE_EXPIRATION_SECS = 6 * 3600  # Six hours
 

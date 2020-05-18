@@ -89,12 +89,9 @@ def run() -> None:
                 client.get_my_orders(['DAI-USDC'])["orders"]
             ))
 
-            my_balances = client.eth.get_my_balances()
-            balance_usdc = my_balances[MARKET_USDC]
-            balance_dai = my_balances[MARKET_DAI]
-
-            new_row = [str(datetime.utcnow()),
-                       wei_to_token(balance_usdc, MARKET_USDC) + wei_to_token(balance_dai, MARKET_DAI)]
+            my_balances = client.get_my_balances()["balances"]
+            balance_usdc = float(my_balances[str(MARKET_USDC)]["wei"])
+            balance_dai = float(my_balances[str(MARKET_DAI)]["wei"])
 
             num_buy_orders = len(list(filter(lambda order: order["side"] == "BUY", my_open_orders)))
             num_sell_orders = len(list(filter(lambda order: order["side"] == "SELL", my_open_orders)))
@@ -133,18 +130,10 @@ def run() -> None:
                 print(msg)
                 post_webhook_message(msg)
 
-                # client.create_order(
-                #     makerMarket=MARKET_USDC,
-                #     takerMarket=MARKET_DAI,
-                #     makerAmount=balance_usdc,
-                #     takerAmount=a_p,
-                #     expiration=int(time.time()) + TRADE_EXPIRATION_SECS
-                #)
-
                 client.place_order(
                     market=consts.PAIR_DAI_USDC,
                     side=consts.SIDE_BUY,
-                    amount=a_p,
+                    amount=Decimal(a_p),
                     price=round(Decimal(max_buy_price), 16),
                     expiration=int(time.time()) + TRADE_EXPIRATION_SECS
                 )
@@ -177,18 +166,10 @@ def run() -> None:
                 print(msg)
                 post_webhook_message(msg)
 
-                # client.create_order(
-                #     makerMarket=MARKET_DAI,
-                #     takerMarket=MARKET_USDC,
-                #     makerAmount=balance_dai,
-                #     takerAmount=a_p,
-                #     expiration=int(time.time()) + TRADE_EXPIRATION_SECS
-                # )
-
                 client.place_order(
                     market=consts.PAIR_DAI_USDC,
                     side=consts.SIDE_SELL,
-                    amount=balance_dai,
+                    amount=Decimal(balance_dai),
                     price=round(Decimal(min_sell_price), 16),
                     expiration=int(time.time()) + TRADE_EXPIRATION_SECS
                 )

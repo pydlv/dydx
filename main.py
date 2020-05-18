@@ -122,9 +122,7 @@ def run() -> None:
 
                 msg = f"""
 -------------------------------------------------------------------------------
-Creating order
-makerMarket={MARKET_USDC}
-takerMarket={MARKET_DAI}
+BUYING
 makerAmount={balance_usdc} ({wei_to_token(balance_usdc, MARKET_USDC)} USDC)
 takerAmount={a_p} ({wei_to_token(a_p, MARKET_DAI)} DAI)
 price={wei_price_to_token_price(max_buy_price)}
@@ -162,9 +160,7 @@ max={wei_price_to_token_price(original_maximum)}
 
                 msg = f"""
 -------------------------------------------------------------------------------
-Creating order
-makerMarket={MARKET_DAI}
-takerMarket={MARKET_USDC}
+SELLING
 makerAmount={balance_dai} ({wei_to_token(balance_dai, MARKET_DAI)} DAI)
 takerAmount={a_p} ({wei_to_token(a_p, MARKET_USDC)} USDC)
 price={wei_price_to_token_price(min_sell_price)}

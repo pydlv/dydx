@@ -29,13 +29,6 @@ def run() -> None:
         now = datetime.now()
         month_ago = now - timedelta(days=HISTORY_LENGTH)
 
-        # fill_check_start = (datetime.utcnow() - timedelta(minutes=10)).replace(tzinfo=UTC)
-        #
-        # my_recent_fills = list(filter(
-        #     lambda fill: dateutil.parser.parse(fill["createdAt"]).replace(tzinfo=UTC) >= fill_check_start,
-        #     client.get_my_fills(["DAI-USDC"])["fills"]
-        # ))
-
         fills_not_confirmed = list(filter(
             lambda fill: fill["status"] != "CONFIRMED",
             client.get_my_fills(["DAI-USDC"])["fills"]
@@ -123,10 +116,10 @@ def run() -> None:
                 msg = f"""
 -------------------------------------------------------------------------------
 BUYING
-makerAmount={balance_usdc} ({wei_to_token(balance_usdc, MARKET_USDC)} USDC)
-takerAmount={a_p} ({wei_to_token(a_p, MARKET_DAI)} DAI)
+makerAmount={wei_to_token(balance_usdc, MARKET_USDC)} USDC
+takerAmount={wei_to_token(a_p, MARKET_DAI)} DAI
 price={wei_price_to_token_price(max_buy_price)}
-predictedProfit={a_f - balance_usdc} ({wei_to_token(a_f - balance_usdc, MARKET_USDC)} USDC)
+predictedProfit={wei_to_token(a_f - balance_usdc, MARKET_USDC)} USDC
 
 min={wei_price_to_token_price(original_minimum)}
 max={wei_price_to_token_price(original_maximum)}
@@ -161,10 +154,10 @@ max={wei_price_to_token_price(original_maximum)}
                 msg = f"""
 -------------------------------------------------------------------------------
 SELLING
-makerAmount={balance_dai} ({wei_to_token(balance_dai, MARKET_DAI)} DAI)
-takerAmount={a_p} ({wei_to_token(a_p, MARKET_USDC)} USDC)
+makerAmount={wei_to_token(balance_dai, MARKET_DAI)} DAI
+takerAmount={wei_to_token(a_p, MARKET_USDC)} USDC
 price={wei_price_to_token_price(min_sell_price)}
-predictedProfit={a_f - balance_dai} ({wei_to_token(a_f - balance_dai, MARKET_DAI)} DAI)
+predictedProfit={wei_to_token(a_f - balance_dai, MARKET_DAI)} DAI
 min={wei_price_to_token_price(original_minimum)}
 max={wei_price_to_token_price(original_maximum)}
 -------------------------------------------------------------------------------
